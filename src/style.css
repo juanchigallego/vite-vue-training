@@ -1,0 +1,96 @@
+@import url("@dialpad/dialtone/css");
+
+@property --angle {
+    inherits: true;
+    initial-value: 0deg;
+    syntax: '<angle>';
+}
+  
+@property --gradoffset {
+    inherits: true;
+    initial-value: -100%;
+    syntax: '<length-percentage>';
+}
+  
+:root {
+    --border: 1;
+    --speed: 3;
+}
+  
+@keyframes spin {
+    to {
+      --angle: 360deg;
+    }
+}
+  
+@keyframes transport {
+    to {
+      --gradoffset: 100%;
+    }
+}
+
+.dt-card-ai {
+  display: flex;
+  gap: var(--dt-space-400);
+  padding: var(--dt-space-400);
+  border-radius: var(--dt-size-radius-500);
+  position: relative;
+  overflow: hidden;
+  border: calc(var(--border) * 1px) solid transparent;
+  background:
+    linear-gradient(var(--dt-color-surface-secondary), var(--dt-color-surface-secondary)) padding-box,
+    /* conic-gradient(from var(--angle, 0deg) at 50% 50%, var(--dt-color-magenta-300) 12%, var(--dt-color-purple-400) 35%, var(--dt-color-purple-400) 65%, var(--dt-color-magenta-300) 90%) border-box; */
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0) calc(0% + var(--gradoffset)),
+      var(--dt-color-magenta-300) calc(10% + var(--gradoffset)),
+      var(--dt-color-purple-400) calc(90% + var(--gradoffset)),
+      rgba(255, 255, 255, 0) calc(100% + var(--gradoffset))) border-box;
+}
+
+.dt-card-ai[data-checked-by-ai="true"] {
+  animation:
+    spin calc(var(--speed) * 1s) infinite linear running,
+    transport calc(var(--speed) * 1s) 1 cubic-bezier(0.600, 0.000, 0.400, 1.000) running;
+}
+
+.dt-card-ai::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0) calc(0% + var(--gradoffset)),
+      var(--dt-color-magenta-300) calc(40% + var(--gradoffset)),
+      var(--dt-color-purple-400) calc(60% + var(--gradoffset)),
+      rgba(255, 255, 255, 0) calc(100% + var(--gradoffset)));
+  opacity: 0.15;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.dt-card-ai h3 {
+  background: linear-gradient(135deg, var(--dt-color-purple-400) calc(10% + var(--gradoffset)), var(--dt-color-magenta-300) calc(40% + var(--gradoffset)), var(--dt-color-magenta-300) calc(60% + var(--gradoffset)), var(--dt-color-purple-400) calc(100% + var(--gradoffset)));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Content */
+
+.chat__wrapper {
+  display: grid; 
+  grid-template-columns: 2fr 1fr; 
+  grid-template-rows: min-content 1fr min-content; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "chat-info sidebar"
+    "chat sidebar"
+    "message-box sidebar"; 
+}
+
+.chat__header { grid-area: chat-info; }
+.chat__container { grid-area: chat; }
+.chat__message-box { grid-area: message-box; }
+.chat__sidebar { grid-area: sidebar; }
