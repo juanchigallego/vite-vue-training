@@ -1,10 +1,5 @@
 @import url("@dialpad/dialtone/css");
-
-@property --angle {
-    inherits: true;
-    initial-value: 0deg;
-    syntax: '<angle>';
-}
+@import url("@dialpad/dialtone/vue3/css");
   
 @property --gradoffset {
     inherits: true;
@@ -13,14 +8,12 @@
 }
   
 :root {
-    --border: 1;
-    --speed: 3;
-}
-  
-@keyframes spin {
-    to {
-      --angle: 360deg;
-    }
+  --border: 1;
+  --speed: 2;
+  --speed-slower: 0.75;
+  --size: 32px;
+  --frames: 27;
+  --timing-function: steps(var(--frames));
 }
   
 @keyframes transport {
@@ -29,28 +22,53 @@
     }
 }
 
+@keyframes sprite {
+  to {
+    object-position: 100% 0;
+  }
+}
+
+@keyframes grow {
+  60% {
+    transform: scale(1);
+  }
+  80% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .dt-card-ai {
   display: flex;
-  gap: var(--dt-space-400);
+  gap: var(--dt-space-350);
   padding: var(--dt-space-400);
   border-radius: var(--dt-size-radius-500);
   position: relative;
-  overflow: hidden;
   border: calc(var(--border) * 1px) solid transparent;
-  background:
-    linear-gradient(var(--dt-color-surface-secondary), var(--dt-color-surface-secondary)) padding-box,
-    /* conic-gradient(from var(--angle, 0deg) at 50% 50%, var(--dt-color-magenta-300) 12%, var(--dt-color-purple-400) 35%, var(--dt-color-purple-400) 65%, var(--dt-color-magenta-300) 90%) border-box; */
-    linear-gradient(135deg,
-      rgba(255, 255, 255, 0) calc(0% + var(--gradoffset)),
-      var(--dt-color-magenta-300) calc(10% + var(--gradoffset)),
-      var(--dt-color-purple-400) calc(90% + var(--gradoffset)),
-      rgba(255, 255, 255, 0) calc(100% + var(--gradoffset))) border-box;
+  background: linear-gradient(
+        var(--dt-color-surface-primary),
+        var(--dt-color-surface-primary)
+      )
+      padding-box,
+    linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) calc(0% + var(--gradoffset)),
+        var(--dt-color-magenta-300) calc(5% + var(--gradoffset)),
+        var(--dt-color-purple-400) calc(95% + var(--gradoffset)),
+        rgba(255, 255, 255, 0) calc(100% + var(--gradoffset))
+      )
+      border-box;
 }
 
 .dt-card-ai[data-checked-by-ai="true"] {
-  animation:
-    spin calc(var(--speed) * 1s) infinite linear running,
-    transport calc(var(--speed) * 1s) 1 cubic-bezier(0.600, 0.000, 0.400, 1.000) running;
+  animation: transport calc(var(--speed) * 1s) 1 0.35s
+    cubic-bezier(0.75, 0, 0.25, 1) forwards;
+}
+
+.dt-card-ai[data-checked-by-ai="true"] .d-icon--sparkle {
+  opacity: 1;
 }
 
 .dt-card-ai::before {
@@ -58,39 +76,118 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background:
-    linear-gradient(135deg,
-      rgba(255, 255, 255, 0) calc(0% + var(--gradoffset)),
-      var(--dt-color-magenta-300) calc(40% + var(--gradoffset)),
-      var(--dt-color-purple-400) calc(60% + var(--gradoffset)),
-      rgba(255, 255, 255, 0) calc(100% + var(--gradoffset)));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0) calc(10% + var(--gradoffset)),
+    var(--dt-color-magenta-300) calc(40% + var(--gradoffset)),
+    var(--dt-color-purple-400) calc(60% + var(--gradoffset)),
+    rgba(255, 255, 255, 0) calc(90% + var(--gradoffset))
+  );
   opacity: 0.15;
   top: 0;
   left: 0;
   pointer-events: none;
 }
 
-.dt-card-ai h3 {
-  background: linear-gradient(135deg, var(--dt-color-purple-400) calc(10% + var(--gradoffset)), var(--dt-color-magenta-300) calc(40% + var(--gradoffset)), var(--dt-color-magenta-300) calc(60% + var(--gradoffset)), var(--dt-color-purple-400) calc(100% + var(--gradoffset)));
+.dt-card-ai h3,
+.dt-card-ai label {
+  background: linear-gradient(
+    135deg,
+    var(--dt-color-magenta-300) calc(-90% + var(--gradoffset)),
+    var(--dt-color-purple-400) calc(-10% + var(--gradoffset)),
+    var(--dt-color-purple-400) calc(10% + var(--gradoffset)),
+    var(--dt-color-magenta-300) calc(90% + var(--gradoffset)),
+    var(--dt-color-foreground-primary) calc(100% + var(--gradoffset))
+  );
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Content */
-
-.chat__wrapper {
-  display: grid; 
-  grid-template-columns: 2fr 1fr; 
-  grid-template-rows: min-content 1fr min-content; 
-  gap: 0px 0px; 
-  grid-template-areas: 
-    "chat-info sidebar"
-    "chat sidebar"
-    "message-box sidebar"; 
+.d-icon--sparkle {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out calc(calc(var(--speed) * 1s) / 2);
 }
 
-.chat__header { grid-area: chat-info; }
-.chat__container { grid-area: chat; }
-.chat__message-box { grid-area: message-box; }
-.chat__sidebar { grid-area: sidebar; }
+.check-css {
+  width: var(--size);
+  height: var(--size);
+  position: absolute;
+  top: 4px;
+  left: 0;
+  aspect-ratio: 1;
+  pointer-events: none;
+  background: transparent;
+}
+
+.check-css img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 0 0;
+}
+
+[data-checked-by-ai="true"] .check-css img {
+  animation: sprite 1s var(--timing-function, ease) forwards;
+}
+
+/* GSAP Animation */
+
+.check-gsap {
+  appearance: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--dt-size-300);
+  position: absolute;
+  top: 12px;
+  left: 8px;
+  border: calc(var(--border) * 1px) solid
+    var(--dt-checkbox-color-border-unchecked);
+  background: linear-gradient(
+      135deg,
+      var(--dt-color-magenta-300) calc(-90% + var(--gradoffset)),
+      var(--dt-color-purple-400) calc(-10% + var(--gradoffset)),
+      var(--dt-color-purple-400) calc(10% + var(--gradoffset)),
+      var(--dt-color-magenta-300) calc(90% + var(--gradoffset)),
+      var(--dt-inputs-color-background-default) calc(100% + var(--gradoffset))
+    )
+    border-box;
+  transform-origin: 50% 50%;
+}
+
+[data-checked-by-ai="true"] .check-gsap {
+  animation: transport calc(var(--speed-slower) * 1s) 1 cubic-bezier(0.75, 0, 0.25, 1)
+      forwards,
+    grow calc(calc(var(--speed-slower) * 0.75) * 1s) ease-in-out forwards;
+}
+
+.checkbox__check {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  fill: var(--dt-color-surface-primary);
+}
+
+.sparks {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: -1px;
+  top: -1px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.spark:nth-child(odd) {
+  fill: var(--dt-color-magenta-300);
+}
+
+.spark:nth-child(even) {
+  fill: var(--dt-color-purple-400);
+}

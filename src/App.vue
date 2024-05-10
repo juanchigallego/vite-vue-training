@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from "vue";
-import PlaybookPanel from "./components/PlaybookPanel.vue";
-import AppHeader from "./components/AppHeader.vue";
-import { DtRootLayout, DtAvatar, DtStack } from "@dialpad/dialtone/vue3";
+import { onMounted, onUnmounted, ref } from "vue";
+import PrototypeTitle from "./components/PrototypeTitle.vue";
+import PlaybookCard from "./components/PlaybookCard.vue";
+import { DtButton, DtStack } from "@dialpad/dialtone/vue3";
 
 const className = "dialtone-theme-dark";
+const task1 = ref(false);
+const task2 = ref(false);
+const task3 = ref(false);
 
 onMounted(() => {
   document.body.classList.add(className);
@@ -16,46 +19,103 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <dt-root-layout
-    header-sticky="true"
-    headerClass="d-d-flex d-ai-center d-gg16 d-p12 d-bb d-bc-default"
-    sidebarClass="d-d-flex d-ai-center d-jc-center d-gg16 d-p12 d-br d-bc-default d-bgc-secondary d-w164"
-    contentClass="chat__wrapper"
-  >
-    <template #header>
-      <app-header />
-    </template>
-    <template #sidebar>
-      <p class="d-body--sm d-fc-tertiary">Sidebar</p>
-    </template>
-    <template #default>
-      <dt-stack direction="row" class="chat__header d-px16 d-py6 d-br d-bb d-bc-default">
-        <dt-stack direction="row" gap="400">
-          <dt-avatar
-            full-name="Darth Vader"
-            size="md"
-            color="1000"
-            presence="active"
-          />
-          <dt-stack>
-            <h2 class="d-font-headline--lg-compact">Darth Vader</h2>
-            <p class="d-font-body--sm-compact">Mobile: (919) 123-4567</p>
-          </dt-stack>
+  <dt-stack class="d-h100vh">
+    <prototype-title class="d-p16 d-bgc-primary" title="Playbook" />
+    <div class="d-d-flex d-jc-center d-py32 d-fl-grow1">
+      <dt-stack class="
+        d-ba
+        d-bc-default
+        d-of-hidden
+        d-bar8
+        d-d-inline-block
+        d-bgc-primary
+        d-bs-sm">
+        <div>
+          <img class="slice slice--dark" src="./assets/topbar--dark.png" alt="">
+          <img class="slice slice--light" src="./assets/topbar--light.png" alt="">
+        </div>
+        <dt-stack direction="row" class="d-ai-flex-start">
+          <div>
+            <img class="slice slice--dark" src="./assets/leftbar--dark.png" alt="">
+            <img class="slice slice--light" src="./assets/leftbar--light.png" alt="">
+          </div>
+          <div>
+            <img class="slice slice--dark" src="./assets/conversation-view--dark.png" alt="">
+            <img class="slice slice--light" src="./assets/conversation-view--light.png" alt="">
+          </div>
+          <div class="playbook-column d-bl d-bc-subtle d-as-stretch">
+            <div>
+              <img class="slice slice--dark" src="./assets/rightbar-playbook--dark.png" alt="">
+              <img class="slice slice--light" src="./assets/rightbar-playbook--light.png" alt="">
+            </div>
+            <dt-stack gap="300" class="d-p8">
+              <playbook-card
+                title="Budget"
+                question="This animation is using a CSS sprite"
+                summary="The customer says they have $24,000 allocated to this effort and they do not see requirements taking them over the budget."
+                :checked-by-a-i="task1"
+                @update:checked-by-a-i="task1 = $event"
+                check-animation="css" />
+              <playbook-card
+                title="Authority"
+                question="This Playbook card is animated using Lottiefiles"
+                summary="The customer says they have $24,000 allocated to this effort and they do not see requirements taking them over the budget."
+                :checked-by-a-i="task2"
+                @update:checked-by-a-i="task2 = $event"
+                check-animation="lottie" />
+              <playbook-card
+                title="Need"
+                question="This checkbox is animated with GSAP"
+                summary="The customer says they have $24,000 allocated to this effort and they do not see requirements taking them over the budget."
+                :checked-by-a-i="task3"
+                @update:checked-by-a-i="task3 = $event"
+                check-animation="gsap" />
+            </dt-stack>
+          </div>
+          <div>
+            <img class="slice slice--dark" src="./assets/skinnybar--dark.png" alt="">
+            <img class="slice slice--light" src="./assets/skinnybar--light.png" alt="">
+          </div>
         </dt-stack>
+        <div>
+          <img class="slice slice--dark" src="./assets/callbar--dark.png" alt="">
+          <img class="slice slice--light" src="./assets/callbar--light.png" alt="">
+        </div>
       </dt-stack>
-      <div class="chat__container d-br d-bb d-bc-default"></div>
-      <div class="chat__message-box d-p12 d-br d-bc-default">
-        <p class="d-body--md d-fc-placeholder">New message</p>
-      </div>
-      <div class="chat__sidebar d-bgc-secondary">
-        <playbook-panel />
-      </div>
-    </template>
-  </dt-root-layout>
+    </div>
+    <dt-stack direction="row" gap="500" class="d-p16 d-bgc-primary d-jc-center">
+      <dt-button importance="outlined" kind="muted" @click="task1 = !task1">Complete Budget task</dt-button>
+      <dt-button importance="outlined" kind="muted" @click="task2 = !task2">Complete Authority task</dt-button>
+      <dt-button importance="outlined" kind="muted" @click="task3 = !task3">Complete Need task</dt-button>
+    </dt-stack>
+  </dt-stack>
 </template>
 
-<style scoped>
-  h2 {
-    line-height: 100%;
+<style lang="less">
+body {
+  background-color: var(--dt-color-surface-bold);
+}
+
+.playbook-column {
+  width: 361px;
+  /* with of Playbook column's image slices */
+}
+
+.slice {
+  display: none;
+  pointer-events: none;
+  user-select: none;
+
+  &--light {
+    .dialtone-theme-light & {
+      display: block;
+    }
   }
+
+  &--dark {
+    .dialtone-theme-dark & {
+      display: block;
+    }
+  }
+}
 </style>
