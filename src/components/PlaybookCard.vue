@@ -124,7 +124,7 @@ function playGsapAnimation() {
         { autoAlpha: 0, rotation: 0 },
         {
           autoAlpha: 1,
-          scale: "random(2.5, 3)",
+          scale: "random(2, 2.5)",
           x: x,
           y: y,
           rotation: "random(0, 10)",
@@ -147,7 +147,7 @@ function playGsapAnimation() {
       <DotLottieVue style="height: 32px; width: 32px" :speed=".5" ref="playerRef"
         src="https://lottie.host/cae6a34c-be47-4745-a262-355a82639802/hJJCgT4iWv.lottie" />
     </div>
-    <div v-else class="check-gsap" data-active="false">
+    <div v-else class="check-gsap d-fc-primary-inverted" data-active="false">
       <dt-icon name="check" size="200" v-if="props.checkedByAI" />
       <svg class="sparks" ref="sparksContainer"></svg>
     </div>
